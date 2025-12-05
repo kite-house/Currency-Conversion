@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 @app.get('/update', tags = 'Update', description= "Update currency exchange rates in the database")
-async def update():
+async def update() -> dict:
     try:
         await get_rates()
     except Exception as error:
@@ -32,7 +32,7 @@ async def update():
         }
 
 @app.get('/update/info', tags = 'Get info', description= "Get data about the latest database update")
-async def updateInfo():
+async def updateInfo() -> dict:
     try:
         response = await getUpdateInfo()
     except Exception as error:
@@ -43,6 +43,25 @@ async def updateInfo():
             'status' : 'success',
             'date_update' : response.date_update
         }
+    
+@app.get('/сonversion', tags = 'Conversion', description = "Conversion currency")
+async def conversion(code_from: str, code_to: str, value: float) -> dict:
+    cours_from = await get_currency_rate(code_from)
+    cours_to = await get_currency_rate(code_to)
+
+    return {
+        code_from : cours_from,
+        'value' : value,
+        code_to : cours_to,
+        'result_value' : cours_to * (1 / cours_from) * 100
+    }
+
+
+async def get_currency_rate(code):
+    try:
+        return await getCours(code)
+    except AttributeError:
+        raise HTTPException(status_code=404, detail=f'The currency {code} was not found!')
 
 if __name__ == "__main__":
     asyncio.run(async_main())

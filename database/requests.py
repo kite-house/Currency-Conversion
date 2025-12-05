@@ -36,4 +36,4 @@ async def getUpdateInfo():
 async def getCours(code: str):
     async with async_session() as session:
         response = await session.execute(select(Course).where(Course.code == code))
-        return response
+        return response.scalar().value 
