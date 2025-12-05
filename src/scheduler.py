@@ -38,24 +38,3 @@ async def lifespan(app: FastAPI):
 
 
 
-
-
-
-'''
-
-API_KEY_COURS = get_key(".env", "API_KEY_COURS")
-BASE_URL = "https://api.unirateapi.com/api"
-
-
-@app.task()
-def get_rates():
-    response = requests.get(
-        url = f'{BASE_URL}/rates',
-        params = {
-            'api_key': API_KEY_COURS
-        }
-    )
-    with open('D:/СurrencyСonversion/src/rates_response.json', 'w') as f:
-        f.write(response.json())
-
-'''
